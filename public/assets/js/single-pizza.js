@@ -12,10 +12,10 @@ let pizzaId;
 function getPizza() {
   // get if of pizza
   const searchParams = new URLSearchParams(document.location.search.substring(1))
-  const pizzaID = searchParams.get("id")
+  const pizzaId = searchParams.get("id")
 
   // get pizzaInfo
-  fetch(`/api/pizza/${pizzaID}`)
+  fetch(`/api/pizza/${pizzaId}`)
     .then(response => {
       // check for an error
       if (!response.ok) {
@@ -107,6 +107,28 @@ function handleNewCommentSubmit(event) {
   }
 
   const formData = { commentBody, writtenBy };
+
+  fetch(`/api/comments/${pizzaId}`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+      response.json();
+    })
+    .then(commentResponse => {
+      console.log(commentResponse);
+      location.reload();
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 function handleNewReplySubmit(event) {
